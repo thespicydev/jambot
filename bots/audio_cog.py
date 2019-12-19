@@ -37,7 +37,7 @@ class AudioCog(commands.Cog):
         Args:
             ctx - The current context of the command.
         '''
-        self._join_author_voice_channel(ctx)
+        await self._join_author_voice_channel(ctx)
             
     @commands.command()
     async def play(self, ctx: commands.Context, url: str):
@@ -92,6 +92,20 @@ class AudioCog(commands.Cog):
         voice = utils.get(self.bot.voice_clients, guild=ctx.guild)
         if voice is not None:
             voice.stop()
+            
+    @commands.command("t")
+    async def toggle(self, ctx: commands.Context):
+        '''Pauses audio if playing, and plays audio if paused.
+        
+        Args:
+            ctx - The current context of the command.
+        '''
+        voice = utils.get(self.bot.voice_clients, guild=ctx.guild)
+        if voice is not None:
+            if voice.is_paused():
+                voice.resume()
+            elif voice.is_playing():
+                voice.pause()
             
     async def cog_check(self, ctx: commands.Context):
         '''Cog-wide check to see if the user is in a voice channel.
