@@ -1,4 +1,4 @@
-from .audio_cog import AudioCog
+from bots.audio_cog import AudioCog
 from discord.ext import commands
 
 

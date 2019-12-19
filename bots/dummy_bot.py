@@ -4,6 +4,7 @@ from typing import Union
 
 import datetime
 
+
 class DummyBot(commands.Bot):
     '''A bot that literally does nothing. Give this bot some life!'''
 

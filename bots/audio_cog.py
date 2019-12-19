@@ -126,6 +126,3 @@ class AudioCog(commands.Cog):
         '''
         if isinstance(error, commands.errors.CheckFailure):
             await ctx.send('You must be connected to a voice channel to use me!')
-            
-        
-        

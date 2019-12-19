@@ -20,6 +20,7 @@ def main():
     spicy_bot = jam_bot.JamBot()
     spicy_bot.run(token)
 
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument(
