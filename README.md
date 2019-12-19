@@ -1,1 +1,1 @@
-# spicebot
+The state of the Discord bot JamBot after following the walkthrough.
