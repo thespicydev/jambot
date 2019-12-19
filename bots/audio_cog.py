@@ -22,6 +22,14 @@ class AudioCog(commands.Cog):
         if voice and voice.is_connected():
             await voice.disconnect()
     
+    async def _join_author_voice_channel(self, ctx:commands.Context):
+        voice = utils.get(self.bot.voice_clients, guild=ctx.guild)
+        channel = ctx.message.author.voice.channel
+        if voice and voice.is_connected():
+            await voice.move_to(channel)
+        else:
+            await channel.connect()
+
     @commands.command()
     async def join(self, ctx: commands.Context):
         '''Joins the voice channel the user who sent the message is in.
@@ -29,12 +37,7 @@ class AudioCog(commands.Cog):
         Args:
             ctx - The current context of the command.
         '''
-        voice = utils.get(self.bot.voice_clients, guild=ctx.guild)
-        channel = ctx.message.author.voice.channel
-        if voice and voice.is_connected():
-            await voice.move_to(channel)
-        else:
-            await channel.connect()
+        self._join_author_voice_channel(ctx)
             
     @commands.command()
     async def play(self, ctx: commands.Context, url: str):
@@ -59,15 +62,8 @@ class AudioCog(commands.Cog):
         }
         with youtube_dl.YoutubeDL(ydl_opts) as ydl:
             ydl.download([url])
-
-        channel = ctx.message.author.voice.channel
-        voice = utils.get(self.bot.voice_clients, guild=ctx.guild)
-        
-        # Connect to the channel the user who sent the message is connected to.
-        if voice and voice.is_connected():
-            await voice.move_to(channel)
-        else:
-            voice = await channel.connect()
+            
+        await self._join_author_voice_channel(ctx)
         
         def audio_finished_playing(path: str):
             '''Called when the audio stream is finished playing.
@@ -81,6 +77,7 @@ class AudioCog(commands.Cog):
             return on_play_end
 
         file_path = 'song-{}.mp3'.format(song_uuid)
+        voice = utils.get(self.bot.voice_clients, guild=ctx.guild)
         voice.play(
             FFmpegPCMAudio(file_path),
             after=audio_finished_playing(file_path))
